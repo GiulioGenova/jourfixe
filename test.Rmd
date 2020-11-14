@@ -20,6 +20,22 @@ print("ciao")
 ```
 
 ```{python}
+
+from ipyleaflet import Map, Marker
+
+center = (52.204793, 360.121558)
+
+m = Map(center=center, zoom=15)
+
+marker = Marker(location=center, draggable=True)
+m.add_layer(marker);
+
+m.display()
+
+```
+
+
+```{python}
 before = ee.ImageCollection('COPERNICUS/S2') \
     .filterDate('2017-01-01', '2017-12-31') \
     .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20)) \
