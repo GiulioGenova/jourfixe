@@ -1,0 +1,59 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_condaenv("~/miniconda3/envs/deepgrids",
+             required = TRUE
+             )
+```
+
+```{python}
+import ee
+import geemap.eefolium
+ee.Initialize()
+print("ciao")
+```
+
+```{python}
+before = ee.ImageCollection('COPERNICUS/S2') \
+    .filterDate('2017-01-01', '2017-12-31') \
+    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20)) \
+    #.map(maskS2clouds)
+
+before = before.median()
+
+#Map.addLayer(before, {bands: ['B8', 'B4', 'B3'], 'gamma' : 2.3}, 'Before')
+
+after = ee.ImageCollection('COPERNICUS/S2') \
+    .filterDate('2020-01-01', '2020-12-31') \
+    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20)) \
+    #.map(maskS2clouds)
+
+after = after.median()
+```
+
+```{python}
+
+left_layer = geemap.ee_tile_layer(before, {'bands': ['B8', 'B4', 'B3'], 'gamma' : 2.3}, 'Before Vaia (2017)')
+right_layer = geemap.ee_tile_layer(after, {'bands': ['B8', 'B4', 'B3'], 'gamma' : 2.3}, 'After Vaia (2019)')
+
+```
+
+
+```{python}
+
+Map = geemap.Map(center=(46.42360444948176,11.579089345899995),zoom = 14)
+Map.split_map(left_layer, right_layer)
+Map.addLayer(before, {'bands': ['B8', 'B4', 'B3'], 'gamma' : 2.3}, 'Before')
+Map
+
+```
+
+```{r, include=TRUE}
+mapview::mapview()
+```
