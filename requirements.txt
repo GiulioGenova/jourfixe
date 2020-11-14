@@ -1,3 +1,5 @@
+earthengine-api
+google-api-python-client
 voila
 geemap
 pandas
